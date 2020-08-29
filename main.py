@@ -105,7 +105,6 @@ def tshoot_network(username, password):
     for device in network_setup['dc1']['devices']:
         pprint (device['name'])
         all_data.append(trouble_shoot_device(device, username, password, commands))
-    all_data = pp.pformat(all_data)
-    return (all_data)
+    return all_data
         
 
