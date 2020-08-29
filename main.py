@@ -94,7 +94,7 @@ def trouble_shoot_device(device, username, password, commands):
             output['BGP issues'] = tmp
     return output
 
-
+#Oh no you found my lab account!!! THE HORROR!!!
 username = 'dhimes'
 password = 'password'
 
