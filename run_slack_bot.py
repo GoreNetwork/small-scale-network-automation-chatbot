@@ -4,7 +4,8 @@ import time
 from pprint import pprint
 from main import *
 
-creds = get_himes_house()
+# creds = get_himes_house()
+creds = get_ntc()
 pprint (creds)
 channel = creds['channel']
 token = creds['token']
@@ -12,6 +13,12 @@ token = creds['token']
 commands_to_watch_for = [
     'help',
     'tshoot_network']
+
+def join_channel(token, channel):
+    url = 'https://slack.com/api/conversations.join?token={}&channel={}&pretty=1('.format(token, channel)
+    r = requests.post(url)
+    all_response = r.json()
+join_channel(token, channel)
 
 def network_tshoot_pretty_output(device):
     pprint (device)
