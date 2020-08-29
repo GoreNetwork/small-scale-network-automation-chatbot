@@ -1,7 +1,7 @@
 from functions import *
 from pprint import pprint
 import pprint as pp
-
+import ipaddress
 
 network_setup_file = 'org.yml'
 commands_file = 'commands.yml'
@@ -98,6 +98,35 @@ def trouble_shoot_device(device, username, password, commands):
 username = 'dhimes'
 password = 'password'
 
+def get_all_subnets(device, commands):
+    subnet_data = []
+    ssh_connection = make_connection(device, username, password)
+    command = commands['show run'][ssh_connection.device_type]
+    output = send_command(ssh_connection, command)
+    output = output.split('\n')
+    interfaces = find_child_text(output, 'nterface')
+    for interface in interfaces:
+        for line in interface:            
+            if 'ip address' in line:
+                tmp_data = {}
+                if len(get_ip(line))==2:
+                    interface_name = interface[0]
+                    tmp_data['name']= interface_name
+                    ip_snm = get_ip(line)
+                    subnet = ipaddress.ip_network('{}/{}'.format(ip_snm[0], ip_snm[1]), strict=False)
+                    tmp_data['subnet']=subnet 
+                    #Add in support for HSRP/VRRP/GLBP
+                    tmp_data['dfgw']= ip_snm[0]
+                    subnet_data.append(tmp_data)
+
+                else: 
+                    #Build out something here to address cider notation
+                    pass
+    return subnet_data
+
+
+
+
 def tshoot_network(username, password):
     all_data = []
     network_setup = read_in_yaml_file(network_setup_file)
@@ -107,4 +136,21 @@ def tshoot_network(username, password):
         all_data.append(trouble_shoot_device(device, username, password, commands))
     return all_data
         
+def find_subnet_data(message):
+    wanted_subnets = []
+    network_setup = read_in_yaml_file(network_setup_file)
+    commands= read_in_yaml_file(commands_file)
+    ip_to_find = get_ip(message)[0]
+    ip_to_find = ipaddress.ip_address(ip_to_find)
+    for device in network_setup['dc1']['devices']:
+        pprint (device['name'])
+        subnets=get_all_subnets(device,commands)
+        for interface in subnets:
+            if ip_to_find in interface['subnet']:
+                interface['device_name']= device['name']
+                wanted_subnets.append(interface)
+    pprint (wanted_subnets)
+    return wanted_subnets
 
+
+    

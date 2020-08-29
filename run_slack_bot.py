@@ -4,15 +4,16 @@ import time
 from pprint import pprint
 from main import *
 
-# creds = get_himes_house()
-creds = get_ntc()
+creds = get_himes_house()
+# creds = get_ntc()
 pprint (creds)
 channel = creds['channel']
 token = creds['token']
  
 commands_to_watch_for = [
     'help',
-    'tshoot_network']
+    'tshoot_network',
+    'find ip']
 
 def join_channel(token, channel):
     url = 'https://slack.com/api/conversations.join?token={}&channel={}&pretty=1('.format(token, channel)
@@ -49,17 +50,36 @@ def network_tshoot_pretty_output(device):
         
     return output
 
-
-
+def find_ip_pretty_output(interface_data):
+    output = ''
+    for interface in interface_data:
+        snm = interface['subnet'].with_netmask
+        snm = snm.split('/')[-1]
+        output = '''{} 
+        Device: {}
+                {}
+                Device IP:  {}
+                Subnet Mask: {}
+        ===========
+        '''.format(output, interface['device_name'],interface['name'],interface['dfgw'],snm)
+    return output
 while 1==1:
     message = get_last_message(token, channel)
     for command in commands_to_watch_for:
-        if message in command:
+        if command in message:
             if 'tshoot_network' in message:
                 all_data = tshoot_network(username, password)
                 for device in all_data:
                     output = network_tshoot_pretty_output(device)
                     post_to_slack(output, channel, token)
                 post_to_slack('done', channel, token)
+            if 'find ip' in message:
+                interface_data = find_subnet_data(message)
+                output = find_ip_pretty_output(interface_data)
+                print (output)
+                post_to_slack(output, channel, token)
+                post_to_slack('done', channel, token)
+
+
     time.sleep(1)
 
