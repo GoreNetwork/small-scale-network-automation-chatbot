@@ -1,5 +1,6 @@
 from functions import *
 from pprint import pprint
+import pprint as pp
 
 
 network_setup_file = 'org.yml'
@@ -22,7 +23,7 @@ def make_output_list(output):
     output = output.split('\n')
     return output
 
-def check_ntp_synch(ssh_connection):
+def check_ntp_synch(ssh_connection, commands):
     bad_indicators = ['unsynchronized', 'NTP is not enabled']
     command = commands['show clock'][ssh_connection.device_type]
     output = send_command_text_fsm(ssh_connection,command)
@@ -35,7 +36,7 @@ def check_ntp_synch(ssh_connection):
             return [False, time]
     return [True, time]
 
-def sort_log(ssh_connection):
+def sort_log(ssh_connection, commands):
     bad_lines={}
     bad_indicators = ['DUAL', 'OSPF', 'recursion', 'BGP', 'flapping between port',
     'Duplicate address', 'MACFLAP', 'EIGRP' ]
@@ -52,7 +53,7 @@ def sort_log(ssh_connection):
                     
     return bad_lines
 
-def check_bgp(ssh_connection, device):
+def check_bgp(ssh_connection, device, commands):
     command = commands['show bgp neighbors'][ssh_connection.device_type]
     output = send_command_text_fsm(ssh_connection,command)
     issues = []
@@ -77,20 +78,20 @@ def check_bgp(ssh_connection, device):
 
 
 
-def trouble_shoot_device(device, username, password):
+def trouble_shoot_device(device, username, password, commands):
     output = {}
     output['IP']=device["ip"]
     output['Device Name']=device['name']
     ssh_connection = make_connection(device, username, password)
     output['cpu_usage_percent'] = pull_cpu_usage(ssh_connection)
-    ntp_tmp_data = check_ntp_synch(ssh_connection)
+    ntp_tmp_data = check_ntp_synch(ssh_connection, commands)
     output['ntp_working'] = ntp_tmp_data[0]
     output['current_time']= ntp_tmp_data[1]
-    output['questionable_log_lines']=sort_log(ssh_connection)
+    output['questionable_log_lines']=sort_log(ssh_connection, commands)
     if 'bgp_nei' in device:
-        tmp = check_bgp(ssh_connection, device)
+        tmp = check_bgp(ssh_connection, device, commands)
         if len(tmp) != 0:
-            output['BGP issues'] = check_bgp(ssh_connection, device)
+            output['BGP issues'] = tmp
     return output
 
 
@@ -103,7 +104,8 @@ def tshoot_network(username, password):
     commands= read_in_yaml_file(commands_file)
     for device in network_setup['dc1']['devices']:
         pprint (device['name'])
-        all_data.append(trouble_shoot_device(device, username, password))
+        all_data.append(trouble_shoot_device(device, username, password, commands))
+    all_data = pp.pformat(all_data)
     return (all_data)
         
 

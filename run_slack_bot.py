@@ -2,6 +2,7 @@ from slack_work import *
 from creds import *
 import time
 from pprint import pprint
+from main import *
 
 creds = get_himes_house()
 pprint (creds)
