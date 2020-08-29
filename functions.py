@@ -134,14 +134,15 @@ def nslookup(input):
 	nslookup = socket.getfqdn(str(input))	
 	return nslookup
 
-# def run_command_on_net_connect(net_connect,command):
-# 	return net_connect.send_command_expect(command)
-
 def get_hostname (ssh_connect):
 	return ssh_connect.find_prompt()[:-1]
 
 def send_command(net_connect,command):
 	return net_connect.send_command_expect(command)
+
+def send_command_text_fsm(net_connect,command):
+	return net_connect.send_command(command, use_textfsm=True)
+	
 
 def read_in_yaml_file(file_name):
     with open(file_name) as file:

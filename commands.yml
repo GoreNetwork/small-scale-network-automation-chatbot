@@ -8,3 +8,9 @@ show ospf neighbors:
   cisco_ios: sh ip ospf neighbors
 show bgp neighbors:
   cisco_ios: show ip bgp summary
+show logging:
+  cisco_ios: show logging
+show clock:
+  cisco_ios: show clock
+show ntp status:
+  cisco_ios: show ntp status  

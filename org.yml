@@ -1,22 +1,52 @@
 dc1:
   devices:
-    - ip: 192.168.0.104
-      type: cisco_ios
-      name: Home_Switch
     - ip: 10.0.0.1
       name: R1
       type: cisco_ios
+      bgp_nei:
+        - 10.0.0.2
+        - 10.0.0.3
+        - 10.0.0.4
+        - 10.0.0.5
+        - 12.12.12.12
+        
     - ip: 10.0.0.2
       name: R2
-      type: cisco_ios
+      type: cisco_ios   
+      bgp_nei:
+        - 10.0.0.1
+        - 10.0.0.3
+        - 10.0.0.4
+        - 10.0.0.5
+
     - ip: 10.0.0.3
       name: R3
       type: cisco_ios
+      bgp_nei:
+        - 10.0.0.2
+        - 10.0.0.1
+        - 10.0.0.4
+        - 10.0.0.5
+
     - ip: 10.0.0.4
       name: R4    
       type: cisco_ios
+      bgp_nei:
+        - 10.0.0.2
+        - 10.0.0.1
+        - 10.0.0.3
+        - 10.0.0.5
+
     - ip: 10.0.0.5
       name: R5
       type: cisco_ios
-    
+      bgp_nei:
+        - 10.0.0.2
+        - 10.0.0.1
+        - 10.0.0.3
+        - 10.0.0.4
+
+    - ip: 192.168.0.104
+      type: cisco_ios
+      name: Home_Switch    
     
