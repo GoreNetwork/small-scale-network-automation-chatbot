@@ -44,9 +44,11 @@ def sort_log(ssh_connection):
                 bad_lines.append(line)
     return bad_lines
 
-def trouble_shoot_device(ip, username, password):
+def trouble_shoot_device(device, username, password):
     output = {}
-    ssh_connection = make_connection(ip, username, password)
+    output['ip']=device["ip"]
+    output['name']=device['name']
+    ssh_connection = make_connection(device, username, password)
     output['cpu_usage_percent'] = pull_cpu_usage(ssh_connection)
     output['ntp_working'] = check_ntp_synch(ssh_connection)
     output['questionable_log_lines']=sort_log(ssh_connection)
@@ -56,5 +58,5 @@ def trouble_shoot_device(ip, username, password):
 username = 'dhimes'
 password = 'password'
 
-for ip in network_setup['dc1']['devices']:
-    trouble_shoot_device(ip, username, password)
+for device in network_setup['dc1']['devices']:
+    trouble_shoot_device(device, username, password)

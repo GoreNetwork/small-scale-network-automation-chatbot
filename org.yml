@@ -1,10 +1,22 @@
 dc1:
   devices:
-    - 192.168.0.104
-    - 10.0.0.1
-    - 10.0.0.2
-    - 10.0.0.3
-    - 10.0.0.4
-    - 10.0.0.5
+    - ip: 192.168.0.104
+      type: cisco_ios
+      name: Home_Switch
+    - ip: 10.0.0.1
+      name: R1
+      type: cisco_ios
+    - ip: 10.0.0.2
+      name: R2
+      type: cisco_ios
+    - ip: 10.0.0.3
+      name: R3
+      type: cisco_ios
+    - ip: 10.0.0.4
+      name: R4    
+      type: cisco_ios
+    - ip: 10.0.0.5
+      name: R5
+      type: cisco_ios
     
     

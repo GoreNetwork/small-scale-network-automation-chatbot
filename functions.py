@@ -84,30 +84,19 @@ def make_list_string_with_spaces(list):
 	return line
 
 
-def make_connection(ip, username, password):
+def make_connection(device, username, password):
+	ip = device['ip']
+	os_type=device['type']
 	try:
-		net_connect = netmiko.ConnectHandler(device_type='cisco_ios', ip=ip, username=username, password=password)
+		net_connect = netmiko.ConnectHandler(device_type=os_type, ip=ip, username=username, password=password)
 		output = net_connect.send_command_expect("show ver")
-		if "Nexus" in output:
-			net_connect.disconnect()
-			return netmiko.ConnectHandler(device_type='cisco_nxos', ip=ip, username=username, password=password)
 		
-		if "Cisco" not in output:
-			if 'cisco' not in output:
-				net_connect.disconnect()
-				issue = ip + ", Not Cisco"
-				to_doc_a("Issues.csv", issue)
-				to_doc_a("Issues.csv", '\n')
-				return None
 		return net_connect
 	except:
-		try:
-			return netmiko.ConnectHandler(device_type='cisco_ios_telnet', ip=ip, username=username, password=password)
-		except:
-			issue = ip + ", can't be ssh/telneted to"
-			to_doc_a("Issues.csv", issue)
-			to_doc_a("Issues.csv", '\n')
-			return None
+		issue = ip + ", can't be ssh/telneted to"
+		to_doc_a("Issues.csv", issue)
+		to_doc_a("Issues.csv", '\n')
+		return None
 
 
 def find_child_text (file, text):
@@ -145,8 +134,8 @@ def nslookup(input):
 	nslookup = socket.getfqdn(str(input))	
 	return nslookup
 
-def run_command_on_net_connect(net_connect,command):
-	return net_connect.send_command_expect(command)
+# def run_command_on_net_connect(net_connect,command):
+# 	return net_connect.send_command_expect(command)
 
 def get_hostname (ssh_connect):
 	return ssh_connect.find_prompt()[:-1]

@@ -1,0 +1,10 @@
+---
+show run:
+  cisco_ios: show run
+show eigrp neighbors:
+  cisco_ios: sh ip eigrp neighbors
+show ospf neighbors:
+  CiscoNxosSSH: show ip ospf neighbor vrf all
+  cisco_ios: sh ip ospf neighbors
+show bgp neighbors:
+  cisco_ios: show ip bgp summary
