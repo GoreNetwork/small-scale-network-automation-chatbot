@@ -124,6 +124,7 @@ def get_all_subnets(device, commands):
                 else: 
                     #Build out something here to address cider notation
                     pass
+    ssh_connection.disconnect()
     return subnet_data
 
 
