@@ -37,6 +37,7 @@ def check_ntp_synch(ssh_connection, commands):
     return [True, time]
 
 def sort_log(ssh_connection, commands):
+    #Should probably set this up to be non-case sensitive at some point
     bad_lines={}
     bad_indicators = ['DUAL', 'OSPF', 'recursion', 'BGP', 'flapping between port',
     'Duplicate address', 'MACFLAP', 'EIGRP' ]
@@ -92,6 +93,7 @@ def trouble_shoot_device(device, username, password, commands):
         tmp = check_bgp(ssh_connection, device, commands)
         if len(tmp) != 0:
             output['BGP issues'] = tmp
+    ssh_connection.disconnect()
     return output
 
 #Oh no you found my lab account!!! THE HORROR!!!
