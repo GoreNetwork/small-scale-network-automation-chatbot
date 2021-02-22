@@ -53,10 +53,12 @@ def sort_log(ssh_connection, commands):
         "OSPF",
         "recursion",
         "BGP",
+        "ADJCHANGE",
         "flapping between port",
         "Duplicate address",
         "MACFLAP",
         "EIGRP",
+        'neighbor',
     ]
     command = commands["show logging"][ssh_connection.device_type]
     output = send_command_text_fsm(ssh_connection, command)
